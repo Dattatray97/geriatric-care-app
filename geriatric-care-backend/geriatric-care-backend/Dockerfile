@@ -8,7 +8,7 @@ RUN mvn clean package -DskipTests
 # Stage 2: Create the final image
 FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
-EXPOSE 8080
+EXPOSE 10000
 
 # Copy the built jar from the build stage
 COPY --from=build /app/target/geriatric-care-app-1.0.0.jar app.jar

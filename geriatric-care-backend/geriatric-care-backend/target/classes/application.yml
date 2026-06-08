@@ -1,5 +1,6 @@
 server:
   port: ${PORT:8088}
+  address: 0.0.0.0
   servlet:
     context-path: /
 
