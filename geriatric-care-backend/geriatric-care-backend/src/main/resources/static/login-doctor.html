@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElderGuard Nexus – Doctor Login</title>
+    <meta name="description" content="Doctor secure login portal for ElderGuard Nexus geriatric care platform.">
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta name="theme-color" content="#6366f1">
+</head>
+<body class="role-doctor">
+    <a href="index.html" class="back-link">
+        <i data-lucide="arrow-left"></i>
+        <span>Back to Role Selection</span>
+    </a>
+    <div class="login-container">
+        <div class="login-hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-bg-image" style="background-image: url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?q=80&w=2070&auto=format&fit=crop')"></div>
+            <div class="hero-content">
+                <div class="role-pill"><i data-lucide="stethoscope"></i><span>Medical Portal</span></div>
+                <div class="logo"><i data-lucide="shield-check"></i><span>ElderGuard Nexus</span></div>
+                <h1 class="hero-title">Clinical Excellence,<br>Delivered Digitally</h1>
+                <p class="hero-subtitle">Access comprehensive patient records, manage prescriptions, schedule appointments, and make data-driven clinical decisions with precision.</p>
+                <div class="hero-stats">
+                    <div class="stat"><span class="stat-number">Full</span><span class="stat-label">Medical Records</span></div>
+                    <div class="stat"><span class="stat-number">Smart</span><span class="stat-label">Prescriptions</span></div>
+                    <div class="stat"><span class="stat-number">Live</span><span class="stat-label">Vitals Data</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="login-form-container">
+            <div class="form-wrapper">
+                <div class="mobile-logo"><i data-lucide="shield-check"></i><span>ElderGuard</span></div>
+                <div class="form-role-badge">
+                    <div class="role-icon"><i data-lucide="stethoscope"></i></div>
+                    <div><span class="role-name">Doctor</span><span class="role-sub">Medical Professional Login</span></div>
+                </div>
+                <div class="form-header">
+                    <h2>Welcome, Doctor</h2>
+                    <p>Sign in to access your medical dashboard and patient records.</p>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event, 'doctor')">
+                    <div id="loginError" class="login-error" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;"></div>
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="mail" class="input-icon"></i>
+                            <input type="email" id="email" placeholder="doctor@elderguard.com" required autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="password-header">
+                            <label for="password">Password</label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i data-lucide="eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="license">Medical License Number</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="badge" class="input-icon"></i>
+                            <input type="text" id="license" placeholder="MCI-XXXXXXXX" required autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="specialty">Specialty</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="clipboard-plus" class="input-icon"></i>
+                            <select id="specialty" class="select-input" required>
+                                <option value="">Select your specialty</option>
+                                <option value="geriatrics">Geriatrics</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="neurology">Neurology</option>
+                                <option value="internal">Internal Medicine</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="remember-me">
+                        <label class="checkbox-container">
+                            <input type="checkbox" checked="checked">
+                            <span class="checkmark"></span>
+                            Remember me for 30 days
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        <span>Sign In as Doctor</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </form>
+                <p class="signup-prompt">Not a doctor? <a href="index.html">Switch role</a></p>
+                <div class="security-note">
+                    <i data-lucide="shield"></i>
+                    <span>Secured with 256-bit encryption. HIPAA compliant.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/login.js"></script>
+</body>
+</html>

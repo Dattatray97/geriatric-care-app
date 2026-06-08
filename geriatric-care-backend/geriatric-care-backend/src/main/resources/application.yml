@@ -1,0 +1,126 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: geriatric-care-app
+  
+  # PostgreSQL Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/geriatric_care_db
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 12345
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  # WebSocket / SockJS
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+  # Email SMTP Configuration - Caretaker Gmail acts as Hospital Email
+  # Put the Caretaker Gmail address and Gmail App Password below
+  # This email will be used as the Hospital Email to send emergency notifications
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: datta.24.024@gmail.com
+    password: "gont caov weyn nxzw"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+# Hospital email display name shown in recipient inbox
+hospital:
+  email:
+    from-name: ElderGuard Nexus Care Center
+
+# Fast2SMS Configuration (Indian SMS Gateway - sends REAL SMS to any Indian number)
+# 1. Login at https://www.fast2sms.com
+# 2. Recharge ₹100 minimum (Wallet > Add Funds)
+# 3. Copy API Key from Dev API section
+fast2sms:
+  api-key: pdAeyBYgO3HRTvU9cqV1bDMo2jmP7a0EKZNW4ulCfGzw8Jh5FrPglw26hJHIaGTXBsMc5RKoeOzVxmY3
+  enabled: true
+
+# Logging
+logging:
+  level:
+    com.geriatriccare: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Custom app properties
+app:
+  name: "Elderly Care Smart City Application"
+  version: "1.0.0"
+  description: "Comprehensive healthcare platform for elderly citizens"
+  
+  # Emergency settings
+  emergency:
+    auto-contact-delay: 30
+    location-sharing: true
+    alert-cooldown: 60
+  
+  # Voice command settings
+  voice:
+    enabled: true
+    language: "en-US"
+    timeout: 10
+  
+  # Health monitoring
+  health:
+    check-interval: 300
+    alert-threshold:
+      heart-rate-min: 50
+      heart-rate-max: 120
+      blood-pressure-systolic-min: 90
+      blood-pressure-systolic-max: 180
+      blood-pressure-diastolic-min: 60
+      blood-pressure-diastolic-max: 120
+  
+  # Food service
+  food:
+    max-delivery-distance: 5
+    default-delivery-fee: 2.99
+    estimated-preparation-time: 30
+  
+  # Pharmacy settings
+  pharmacy:
+    auto-refill-enabled: true
+    reminder-advance-time: 15
+    drug-interaction-check: true

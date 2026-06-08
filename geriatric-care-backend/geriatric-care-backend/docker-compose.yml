@@ -1,0 +1,39 @@
+
+
+services:
+  app:
+    build: .
+    container_name: geriatric-care-backend
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      # Ensure you configure DB connection properties if using an external DB instead of H2
+      # - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/geriatric_db
+      # - SPRING_DATASOURCE_USERNAME=postgres
+      # - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - geriatric-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: geriatric-postgres-db
+    environment:
+      - POSTGRES_DB=geriatric_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - geriatric-network
+
+volumes:
+  postgres_data:
+
+networks:
+  geriatric-network:
+    driver: bridge

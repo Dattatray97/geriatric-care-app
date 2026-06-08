@@ -1,0 +1,83 @@
+/* ELDERGUARD NEXUS - SHARED ROLE LOGIN STYLES */
+:root {
+  --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg: #070d1a; --surface: #0e1628; --border: rgba(255,255,255,0.08);
+  --text: #f0f6ff; --muted: rgba(255,255,255,0.55);
+  --form-bg: #ffffff; --form-text: #0f172a; --form-muted: #64748b;
+  --form-border: #e2e8f0; --form-input-bg: #f8fafc;
+  --role-primary: #00c896; --role-primary-dark: #00a876;
+  --role-glow: rgba(0,200,150,0.25); --role-light: rgba(0,200,150,0.1);
+  --hero-from: rgba(0,90,60,0.88); --hero-to: rgba(0,30,20,0.97);
+}
+body.role-caretaker { --role-primary:#00c896; --role-primary-dark:#00a876; --role-glow:rgba(0,200,150,0.25); --role-light:rgba(0,200,150,0.12); --hero-from:rgba(0,80,55,0.88); --hero-to:rgba(0,25,18,0.97); }
+body.role-doctor    { --role-primary:#6366f1; --role-primary-dark:#4f46e5; --role-glow:rgba(99,102,241,0.25); --role-light:rgba(99,102,241,0.12); --hero-from:rgba(40,35,110,0.88); --hero-to:rgba(10,8,40,0.97); }
+body.role-family    { --role-primary:#f59e0b; --role-primary-dark:#d97706; --role-glow:rgba(245,158,11,0.25); --role-light:rgba(245,158,11,0.12); --hero-from:rgba(100,55,0,0.88); --hero-to:rgba(30,15,0,0.97); }
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;position:relative}
+.back-link{position:fixed;top:1.5rem;left:1.5rem;z-index:100;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:100px;padding:10px 20px;font-size:.85rem;font-weight:600;color:rgba(255,255,255,0.85);text-decoration:none;backdrop-filter:blur(12px);transition:all .25s ease}
+.back-link:hover{background:rgba(255,255,255,0.14);color:#fff;transform:translateX(-3px)}
+.back-link i{width:16px;height:16px}
+.login-container{display:flex;width:100%;min-height:100vh}
+.login-hero{flex:1.15;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:4rem;overflow:hidden}
+.hero-bg-image{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(150deg,var(--hero-from) 0%,var(--hero-to) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;color:white;animation:fadeUp .9s cubic-bezier(.22,1,.36,1)}
+.role-pill{display:inline-flex;align-items:center;gap:8px;background:var(--role-light);border:1px solid var(--role-primary);border-radius:100px;padding:8px 18px;font-size:.78rem;font-weight:700;color:var(--role-primary);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2.5rem}
+.role-pill i,.logo i,.back-link i{width:15px;height:15px}
+.logo{display:flex;align-items:center;gap:12px;font-size:1.25rem;font-weight:700;margin-bottom:3rem;color:rgba(255,255,255,.9)}
+.logo i{width:28px;height:28px;color:var(--role-primary)}
+.hero-title{font-size:clamp(2.2rem,3.5vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:1.25rem;color:#fff}
+.hero-subtitle{font-size:1.05rem;color:rgba(255,255,255,.72);line-height:1.7;margin-bottom:3rem;font-weight:400;max-width:500px}
+.hero-stats{display:flex;gap:2.5rem;border-top:1px solid rgba(255,255,255,.15);padding-top:2rem}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-number{font-size:1.5rem;font-weight:800;color:var(--role-primary)}
+.stat-label{font-size:.78rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
+.login-form-container{flex:1;background:var(--form-bg);display:flex;align-items:center;justify-content:center;padding:2.5rem 2rem;position:relative;overflow-y:auto}
+.form-wrapper{width:100%;max-width:460px;animation:slideIn .8s cubic-bezier(.16,1,.3,1)}
+.mobile-logo{display:none;align-items:center;gap:10px;font-size:1.1rem;font-weight:700;color:var(--role-primary);margin-bottom:2rem}
+.mobile-logo i{width:22px;height:22px}
+.form-role-badge{display:flex;align-items:center;gap:14px;background:var(--role-light);border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px 18px;margin-bottom:2rem}
+.role-icon{width:48px;height:48px;background:var(--role-primary);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px var(--role-glow);flex-shrink:0}
+.role-icon i{width:24px;height:24px;color:#fff}
+.role-name{display:block;font-size:1rem;font-weight:700;color:var(--form-text)}
+.role-sub{display:block;font-size:.78rem;color:var(--form-muted);font-weight:500}
+.form-header{margin-bottom:2rem}
+.form-header h2{font-size:1.85rem;font-weight:800;color:var(--form-text);margin-bottom:.4rem}
+.form-header p{color:var(--form-muted);font-size:.95rem}
+.input-group{margin-bottom:1.3rem}
+.input-group label{display:block;font-size:.85rem;font-weight:600;color:var(--form-text);margin-bottom:.45rem}
+.password-header{display:flex;justify-content:space-between;align-items:center}
+.forgot-password{font-size:.82rem;color:var(--role-primary);text-decoration:none;font-weight:600;transition:opacity .2s}
+.forgot-password:hover{opacity:.75;text-decoration:underline}
+.input-wrapper{position:relative;display:flex;align-items:center}
+.input-icon{position:absolute;left:15px;color:var(--form-muted);width:19px;height:19px;pointer-events:none}
+.input-wrapper input,.input-wrapper .select-input{width:100%;padding:13px 16px 13px 46px;border:1.5px solid var(--form-border);border-radius:12px;font-size:.97rem;font-family:var(--font);color:var(--form-text);background:var(--form-input-bg);transition:all .25s ease;outline:none;appearance:none}
+.input-wrapper input:focus,.input-wrapper .select-input:focus{border-color:var(--role-primary);box-shadow:0 0 0 4px var(--role-light);background:#fff}
+.input-wrapper input::placeholder{color:#94a3b8}
+.select-input{cursor:pointer}
+.toggle-password{position:absolute;right:14px;background:none;border:none;color:var(--form-muted);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .2s}
+.toggle-password:hover{color:var(--role-primary)}
+.toggle-password i{width:18px;height:18px}
+.remember-me{margin-bottom:1.5rem}
+.checkbox-container{display:flex;align-items:center;position:relative;padding-left:30px;cursor:pointer;font-size:.85rem;color:var(--form-muted);user-select:none}
+.checkbox-container input{position:absolute;opacity:0;cursor:pointer;height:0;width:0}
+.checkmark{position:absolute;top:50%;left:0;transform:translateY(-50%);height:20px;width:20px;background:var(--form-input-bg);border:1.5px solid var(--form-border);border-radius:6px;transition:all .2s ease}
+.checkbox-container input:checked~.checkmark{background:var(--role-primary);border-color:var(--role-primary)}
+.checkmark::after{content:"";position:absolute;display:none;left:6px;top:2px;width:5px;height:10px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.checkbox-container input:checked~.checkmark::after{display:block}
+.btn-login{width:100%;padding:15px;background:var(--role-primary);color:white;border:none;border-radius:12px;font-size:1.05rem;font-weight:700;font-family:var(--font);cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;transition:all .3s ease;box-shadow:0 5px 18px var(--role-glow);margin-bottom:1.5rem}
+.btn-login:hover{background:var(--role-primary-dark);transform:translateY(-2px);box-shadow:0 8px 24px var(--role-glow)}
+.btn-login i{width:20px;height:20px;transition:transform .3s ease}
+.btn-login:hover i:not(.spin){transform:translateX(4px)}
+.signup-prompt{text-align:center;color:var(--form-muted);font-size:.875rem;margin-bottom:1.5rem}
+.signup-prompt a{color:var(--role-primary);font-weight:700;text-decoration:none}
+.signup-prompt a:hover{text-decoration:underline}
+.security-note{display:flex;align-items:center;justify-content:center;gap:7px;font-size:.78rem;color:var(--form-muted);border-top:1px solid var(--form-border);padding-top:1.25rem}
+.security-note i{width:14px;height:14px;color:var(--role-primary)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+@media(max-width:968px){.login-hero{display:none}.mobile-logo{display:flex}.back-link span{display:none}.login-form-container{padding:5rem 1.5rem 2.5rem}}
+@media(max-width:480px){.form-wrapper{max-width:100%}.form-header h2{font-size:1.6rem}}

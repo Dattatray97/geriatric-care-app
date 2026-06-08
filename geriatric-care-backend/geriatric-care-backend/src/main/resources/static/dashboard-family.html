@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>ElderGuard Nexus — Family Portal</title>
+  <meta name="description" content="Family access portal for ElderGuard Nexus geriatric care platform.">
+  <link rel="stylesheet" href="styles/family.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-logo">
+        <div class="logo-icon"><i data-lucide="heart"></i></div>
+        <div>
+          <h1>ElderGuard Nexus</h1>
+          <span>Family Portal</span>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <span class="sys-online">System Online</span>
+      <span>·</span><span id="liveDateTime">Loading...</span>
+    </div>
+    <div class="topbar-right">
+      <span class="role-pill"><i data-lucide="users"></i> Family Access</span>
+      <button class="top-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">☀️</button>
+      <div class="user-pill">
+        <div class="user-avatar" id="familyAvatar">FM</div>
+        <div><span id="familyName">Family Member</span><small>Connected</small></div>
+      </div>
+      <button class="top-btn logout-btn" onclick="logout()" title="Logout"><i data-lucide="log-out"></i></button>
+    </div>
+  </div>
+
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <div class="ntab active" id="tabOverview" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i>
+      Patient Overview</div>
+    <div class="ntab" id="tabMeds" onclick="showView('meds')"><i data-lucide="pill"></i> Medications <span class="cnt"
+        id="medCnt">0</span></div>
+    <div class="ntab" id="tabAppts" onclick="showView('appts')"><i data-lucide="calendar"></i> Appointments <span
+        class="cnt" id="apptCnt">0</span></div>
+    <div class="ntab" id="tabOrders" onclick="showView('orders')"><i data-lucide="clipboard-list"></i> Care Updates
+      <span class="cnt" id="orderCnt">0</span></div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-layout">
+
+    <!-- CENTER: Dynamic Views -->
+    <div class="center-area">
+
+      <!-- VIEW: Patient Overview -->
+      <div class="view-content" id="viewOverview">
+        <div class="patient-header" id="patientHeader">
+          <div class="ph-left">
+            <div class="ph-avatar" id="phAvatar">--</div>
+            <div class="ph-info">
+              <h2 id="phName">Loading Patient...</h2>
+              <p id="phMeta">Fetching details...</p>
+            </div>
+            <span class="status-badge" id="phStatus" style="display:none">UNKNOWN</span>
+          </div>
+          <div class="ph-actions">
+            <span class="ref-code" id="phRefCode">REF: —</span>
+          </div>
+        </div>
+
+        <div class="detail-pane">
+          <div class="pane-header">
+            <h3>Live Health Status</h3>
+            <span class="live-indicator">Live Updates Active</span>
+          </div>
+
+          <div class="vitals-grid">
+            <div class="vital-card">
+              <div class="vi-label">❤️ Heart Rate</div>
+              <div class="vi-val ok" id="hrVal">--</div>
+              <div class="vi-unit">bpm</div>
+            </div>
+            <div class="vital-card">
+              <div class="vi-label">🩸 Blood Pressure</div>
+              <div class="vi-val normal" id="bpVal">--/--</div>
+              <div class="vi-unit">mmHg</div>
+            </div>
+            <div class="vital-card">
+              <div class="vi-label">🫁 O2 Saturation</div>
+              <div class="vi-val ok" id="o2Val">--</div>
+              <div class="vi-unit">% SpO2</div>
+            </div>
+            <div class="vital-card">
+              <div class="vi-label">🌡️ Temperature</div>
+              <div class="vi-val normal" id="tempVal">--</div>
+              <div class="vi-unit">°F</div>
+            </div>
+            <div class="vital-card">
+              <div class="vi-label">💧 Blood Sugar</div>
+              <div class="vi-val ok" id="bsVal">--</div>
+              <div class="vi-unit">mg/dL</div>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title">Heart Rate Trend</div>
+            <div class="chart-canvas"><svg class="chart-svg" id="chartSvg" viewBox="0 0 600 100"
+                preserveAspectRatio="none"></svg></div>
+          </div>
+
+          <div class="info-grid" id="patientMedInfo">
+            <div class="info-card">
+              <h4>🩺 Known Conditions</h4>
+              <p id="patConditions">—</p>
+            </div>
+            <div class="info-card">
+              <h4>⚗️ Allergies</h4>
+              <p id="patAllergies">—</p>
+            </div>
+            <div class="info-card">
+              <h4>🩸 Blood Type</h4>
+              <p id="patBloodType">—</p>
+            </div>
+            <div class="info-card">
+              <h4>📞 Facility Emergency Contact</h4>
+              <p>Front Desk: +1 (555) 019-8234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Medications -->
+      <div class="view-content" id="viewMeds" style="display:none">
+        <div class="view-header">
+          <h2>💊 Current Medications</h2>
+        </div>
+        <div class="detail-pane" style="padding-top:0">
+          <div id="rxList">
+            <div class="empty-state">Loading medications...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Appointments -->
+      <div class="view-content" id="viewAppts" style="display:none">
+        <div class="view-header">
+          <h2>📅 Upcoming Appointments</h2>
+        </div>
+        <div class="detail-pane" style="padding-top:0">
+          <div id="apptListDetail">
+            <div class="empty-state">Loading appointments...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Care Orders -->
+      <div class="view-content" id="viewOrders" style="display:none">
+        <div class="view-header">
+          <h2>📋 Recent Care Updates</h2>
+        </div>
+        <div class="detail-pane" style="padding-top:0">
+          <div id="ordersListDetail">
+            <div class="empty-state">Loading care updates...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /center-area -->
+
+    <!-- RIGHT: Activity Feed & Messaging -->
+    <div class="right-panel">
+      <div class="rp-head">CARE TEAM UPDATES</div>
+      <div class="feed-list" id="liveFeed">
+        <div class="empty-state" id="feedEmpty">Waiting for updates...</div>
+      </div>
+
+      <div class="rp-head" style="border-top:1px solid var(--border)">MESSAGE CARE TEAM</div>
+      <div class="message-area">
+        <div class="chat-box" id="chatBox">
+          <div class="chat-msg received">Hello! I'm the automated care assistant. How can we help you today?</div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKey(event)">
+          <button onclick="sendChatMessage()"><i data-lucide="send"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-layout -->
+
+  <!-- ERROR MODAL -->
+  <div class="modal" id="errorModal">
+    <div class="modal-box" style="max-width:400px;text-align:center">
+      <div class="modal-body" style="padding:30px">
+        <i data-lucide="alert-circle" style="width:48px;height:48px;color:var(--danger2);margin-bottom:16px"></i>
+        <h3 style="font-size:18px;margin-bottom:10px">Patient Not Found</h3>
+        <p style="color:var(--muted);margin-bottom:20px">We could not find a patient with the provided Reference Code.
+          Please check the code and try logging in again.</p>
+        <button class="btn btn-primary" style="width:100%;background:var(--pri);color:#fff" onclick="logout()">Return to
+          Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMERGENCY ALERT MODAL -->
+  <div class="modal" id="sosAlertModal" style="background:rgba(239,68,68,0.8);backdrop-filter:blur(10px)">
+    <div class="modal-box"
+      style="max-width:500px;text-align:center;background:var(--bg);border:2px solid var(--danger);box-shadow:0 0 50px rgba(239,68,68,0.5)">
+      <div class="modal-body" style="padding:40px">
+        <div
+          style="width:80px;height:80px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:pulse 1s infinite">
+          <i data-lucide="alert-triangle" style="width:40px;height:40px;color:#fff"></i>
+        </div>
+        <h2 style="color:var(--danger);font-size:24px;font-weight:800;margin-bottom:10px;text-transform:uppercase">
+          Emergency SOS Triggered</h2>
+        <p style="font-size:16px;color:var(--text);margin-bottom:10px">The care team has initiated an emergency alert
+          for <strong id="sosPatientName">your relative</strong>.</p>
+        <p style="color:var(--muted);margin-bottom:30px">Emergency services and primary contacts are being notified.</p>
+        <button class="btn" style="background:var(--danger);color:#fff;width:100%;font-size:16px;padding:14px"
+          onclick="document.getElementById('sosAlertModal').style.display='none'">I Understand / Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toastContainer"
+    style="position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;">
+  </div>
+
+  <script src="scripts/dashboard-family.js"></script>
+</body>
+
+</html>

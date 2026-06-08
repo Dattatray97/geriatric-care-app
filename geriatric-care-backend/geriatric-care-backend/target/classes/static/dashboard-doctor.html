@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ElderGuard Nexus — Doctor Dashboard</title>
+<meta name="description" content="Doctor clinical dashboard for ElderGuard Nexus geriatric care platform.">
+<link rel="stylesheet" href="styles/doctor.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="app-logo">
+      <div class="logo-icon"><i data-lucide="stethoscope"></i></div>
+      <div>
+        <h1>ElderGuard Nexus</h1>
+        <span>Doctor Clinical Dashboard</span>
+      </div>
+    </div>
+  </div>
+  <div class="topbar-center">
+    <span class="sys-online">System Online</span>
+    <span>·</span><span id="liveDateTime">Loading...</span>
+  </div>
+  <div class="topbar-right">
+    <span class="role-pill"><i data-lucide="stethoscope"></i> Doctor Portal</span>
+    <button class="top-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">☀️</button>
+    <div class="user-pill">
+      <div class="user-avatar" id="doctorAvatar">DR</div>
+      <div><span id="doctorName">Dr. Attending</span><small>Geriatrician</small></div>
+    </div>
+    <button class="top-btn logout-btn" onclick="logout()" title="Logout"><i data-lucide="log-out"></i></button>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="ntab active" id="tabPatients" onclick="showView('patients')"><i data-lucide="users"></i> Patients <span class="cnt" id="patientCnt">0</span></div>
+  <div class="ntab" id="tabMeds" onclick="showView('meds')"><i data-lucide="pill"></i> Prescriptions <span class="cnt" id="medCnt">0</span></div>
+  <div class="ntab" id="tabAppts" onclick="showView('appts')"><i data-lucide="calendar"></i> Appointments <span class="cnt" id="apptCnt">0</span></div>
+  <div class="ntab" id="tabOrders" onclick="showView('orders')"><i data-lucide="clipboard-list"></i> Care Orders <span class="cnt" id="orderCnt">0</span></div>
+  <div class="ntab" id="tabAlerts" onclick="showView('alerts')"><i data-lucide="alert-triangle"></i> Alerts <span class="cnt danger-cnt" id="alertCnt">0</span></div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+<!-- LEFT: Patient Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-head">
+    <h3>My Patients</h3>
+    <span class="cnt-text" id="patientTotal">0 total</span>
+  </div>
+  <div class="search-box">
+    <i data-lucide="search"></i>
+    <input type="text" id="patientSearch" placeholder="Search patients..." oninput="filterPatientList(this.value)">
+  </div>
+  <div class="patient-list" id="patientList">
+    <div class="empty-state">Loading patients...</div>
+  </div>
+</div>
+
+<!-- CENTER: Dynamic Views -->
+<div class="center-area">
+
+<!-- VIEW: Patients (selected patient details) -->
+<div class="view-content" id="viewPatients">
+  <div class="patient-header" id="patientHeader">
+    <div class="ph-left">
+      <div class="ph-avatar" id="phAvatar">--</div>
+      <div class="ph-info">
+        <h2 id="phName">Select a Patient</h2>
+        <p id="phMeta">Click a patient to view clinical details</p>
+      </div>
+      <span class="status-badge" id="phStatus" style="display:none">STABLE</span>
+    </div>
+    <div class="ph-actions" id="phActions" style="display:none">
+      <span class="ref-code" id="phRefCode">REF: —</span>
+    </div>
+  </div>
+
+  <!-- Clinical Detail Tabs -->
+  <div class="detail-tabs">
+    <div class="dtab active" onclick="showDetailTab('vitals')">❤️ Vitals</div>
+    <div class="dtab" onclick="showDetailTab('rx')">💊 Prescriptions</div>
+    <div class="dtab" onclick="showDetailTab('appts-detail')">📅 Appointments</div>
+    <div class="dtab" onclick="showDetailTab('orders-detail')">📋 Care Orders</div>
+    <div class="dtab" onclick="showDetailTab('notes')">🩺 Clinical Notes</div>
+  </div>
+
+  <!-- Vitals Tab -->
+  <div class="detail-pane" id="paneVitals">
+    <div class="vitals-grid">
+      <div class="vital-card"><div class="vi-label">❤️ Heart Rate</div><div class="vi-val ok" id="hrVal">--</div><div class="vi-unit">bpm</div></div>
+      <div class="vital-card"><div class="vi-label">🩸 Blood Pressure</div><div class="vi-val normal" id="bpVal">--/--</div><div class="vi-unit">mmHg</div></div>
+      <div class="vital-card"><div class="vi-label">🫁 O2 Saturation</div><div class="vi-val ok" id="o2Val">--</div><div class="vi-unit">% SpO2</div></div>
+      <div class="vital-card"><div class="vi-label">🌡️ Temperature</div><div class="vi-val normal" id="tempVal">--</div><div class="vi-unit">°F</div></div>
+      <div class="vital-card"><div class="vi-label">💧 Blood Sugar</div><div class="vi-val warn" id="bsVal">--</div><div class="vi-unit">mg/dL</div></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Heart Rate Trend</div>
+      <div class="chart-canvas"><svg class="chart-svg" id="chartSvg" viewBox="0 0 600 100" preserveAspectRatio="none"></svg></div>
+    </div>
+    <div class="info-grid" id="patientMedInfo">
+      <div class="info-card">
+        <h4>🩺 Medical Conditions</h4>
+        <p id="patConditions">—</p>
+      </div>
+      <div class="info-card">
+        <h4>⚗️ Allergies</h4>
+        <p id="patAllergies">—</p>
+      </div>
+      <div class="info-card">
+        <h4>🩸 Blood Type</h4>
+        <p id="patBloodType">—</p>
+      </div>
+      <div class="info-card">
+        <h4>📞 Emergency Contact</h4>
+        <p id="patEmergencyContact">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prescriptions Tab -->
+  <div class="detail-pane" id="paneRx" style="display:none">
+    <div class="pane-header">
+      <h3>💊 Prescriptions for <span id="rxPatientName">—</span></h3>
+      <button class="btn btn-doc" onclick="openPrescribeModal()"><i data-lucide="plus"></i> Prescribe</button>
+    </div>
+    <div id="rxList"><div class="empty-state">Select a patient to view prescriptions</div></div>
+  </div>
+
+  <!-- Appointments Tab -->
+  <div class="detail-pane" id="paneApptsDetail" style="display:none">
+    <div class="pane-header">
+      <h3>📅 Appointments for <span id="apptPatientName">—</span></h3>
+      <button class="btn btn-doc" onclick="openApptModal()"><i data-lucide="plus"></i> Schedule</button>
+    </div>
+    <div id="apptListDetail"><div class="empty-state">Select a patient to view appointments</div></div>
+  </div>
+
+  <!-- Care Orders Tab -->
+  <div class="detail-pane" id="paneOrdersDetail" style="display:none">
+    <div class="pane-header">
+      <h3>📋 Care Orders for <span id="orderPatientName">—</span></h3>
+      <button class="btn btn-doc" onclick="openOrderModal()"><i data-lucide="plus"></i> New Order</button>
+    </div>
+    <div id="ordersListDetail"><div class="empty-state">Select a patient to view care orders</div></div>
+  </div>
+
+  <!-- Clinical Notes Tab -->
+  <div class="detail-pane" id="paneNotes" style="display:none">
+    <div class="pane-header">
+      <h3>🩺 Clinical Notes — <span id="notesPatientName">—</span></h3>
+    </div>
+    <div class="notes-area">
+      <textarea id="clinicalNotes" placeholder="Write clinical observations, diagnoses, treatment plans..." style="width:100%;min-height:180px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;resize:vertical;"></textarea>
+      <button class="btn btn-doc" style="margin-top:10px" onclick="saveNotes()"><i data-lucide="save"></i> Save Notes</button>
+    </div>
+    <div id="savedNotes" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- VIEW: All Prescriptions -->
+<div class="view-content" id="viewMeds" style="display:none">
+  <div class="view-header">
+    <h2>💊 All Prescriptions</h2>
+    <button class="btn btn-doc" onclick="openPrescribeModal()"><i data-lucide="plus"></i> New Prescription</button>
+  </div>
+  <div id="allMedsList"><div class="empty-state">Loading...</div></div>
+</div>
+
+<!-- VIEW: All Appointments -->
+<div class="view-content" id="viewAppts" style="display:none">
+  <div class="view-header">
+    <h2>📅 All Appointments</h2>
+    <button class="btn btn-doc" onclick="openApptModal()"><i data-lucide="plus"></i> Schedule Appointment</button>
+  </div>
+  <div id="allApptsList"><div class="empty-state">Loading...</div></div>
+</div>
+
+<!-- VIEW: All Orders -->
+<div class="view-content" id="viewOrders" style="display:none">
+  <div class="view-header">
+    <h2>📋 All Care Orders</h2>
+  </div>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Patient</th><th>Type</th><th>Description</th><th>Priority</th><th>Status</th></tr></thead>
+    <tbody id="allOrdersBody"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody>
+  </table>
+</div>
+
+<!-- VIEW: Alerts -->
+<div class="view-content" id="viewAlerts" style="display:none">
+  <div class="view-header"><h2>🚨 Active Alerts</h2></div>
+  <div id="allAlertsList"><div class="empty-state">Loading...</div></div>
+</div>
+
+</div><!-- /center-area -->
+
+<!-- RIGHT: Activity Feed -->
+<div class="right-panel">
+  <div class="rp-head">LIVE FEED <button class="small-btn" onclick="clearFeed()">Clear</button></div>
+  <div class="feed-list" id="liveFeed">
+    <div class="empty-state" id="feedEmpty">Waiting for activity...</div>
+  </div>
+</div>
+
+</div><!-- /main-layout -->
+
+<!-- MODALS -->
+
+<!-- Prescribe Modal -->
+<div class="modal" id="prescribeModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>💊 New Prescription</h3><button onclick="closeModal('prescribeModal')">✕</button></div>
+    <div class="modal-body">
+      <form id="prescribeForm" onsubmit="savePrescription(event)">
+        <div class="form-row">
+          <div class="form-g"><label>Patient</label><select id="rx_patient" required><option value="">Select patient...</option></select></div>
+          <div class="form-g"><label>Medication Name *</label><input type="text" id="rx_name" required placeholder="e.g. Metformin 500mg"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-g"><label>Dosage</label><input type="text" id="rx_dosage" placeholder="e.g. 500mg"></div>
+          <div class="form-g"><label>Frequency</label><input type="text" id="rx_frequency" placeholder="e.g. Twice daily"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-g"><label>Time Slots</label><input type="text" id="rx_timeSlots" placeholder="e.g. 8AM, 8PM"></div>
+          <div class="form-g"><label>With Food?</label><select id="rx_withFood"><option value="true">Yes</option><option value="false">No</option></select></div>
+        </div>
+        <div class="form-g" style="margin-bottom:12px"><label>Description / Indication</label><input type="text" id="rx_description" placeholder="What is it for?"></div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeModal('prescribeModal')">Cancel</button>
+          <button type="submit" class="btn btn-doc">Prescribe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Appointment Modal -->
+<div class="modal" id="apptModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>📅 Schedule Appointment</h3><button onclick="closeModal('apptModal')">✕</button></div>
+    <div class="modal-body">
+      <form id="apptForm" onsubmit="saveAppointment(event)">
+        <input type="hidden" id="af_id">
+        <div class="form-row">
+          <div class="form-g"><label>Patient *</label><select id="af_patient" required><option value="">Select patient...</option></select></div>
+          <div class="form-g"><label>Doctor Name *</label><input type="text" id="af_doctor" required placeholder="Dr. Name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-g"><label>Type</label><select id="af_type"><option value="checkup">Checkup</option><option value="follow-up">Follow-up</option><option value="lab-test">Lab Test</option><option value="specialist">Specialist</option><option value="therapy">Therapy</option></select></div>
+          <div class="form-g"><label>Date & Time *</label><input type="datetime-local" id="af_date" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-g"><label>Location</label><input type="text" id="af_location" placeholder="e.g. Clinic Room 2"></div>
+        </div>
+        <div class="form-g" style="margin-bottom:12px"><label>Notes</label><textarea id="af_notes" placeholder="Additional notes..."></textarea></div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeModal('apptModal')">Cancel</button>
+          <button type="submit" class="btn btn-doc">Save Appointment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Care Order Modal -->
+<div class="modal" id="orderModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>📋 New Care Order</h3><button onclick="closeModal('orderModal')">✕</button></div>
+    <div class="modal-body">
+      <form id="orderForm" onsubmit="saveCareOrder(event)">
+        <div class="form-row">
+          <div class="form-g"><label>Patient *</label><select id="co_patient" required><option value="">Select patient...</option></select></div>
+          <div class="form-g"><label>Type</label><select id="co_type"><option value="medication">💊 Medication</option><option value="food">🍽️ Food</option><option value="healthcare">🏥 Healthcare</option><option value="emergency">🚨 Emergency</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-g"><label>Priority</label><select id="co_priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="critical">Critical</option></select></div>
+          <div class="form-g"><label>Status</label><select id="co_status"><option value="pending">Pending</option><option value="in_progress">In Progress</option><option value="completed">Completed</option></select></div>
+        </div>
+        <div class="form-g" style="margin-bottom:12px"><label>Description *</label><textarea id="co_desc" required placeholder="Describe the care order..."></textarea></div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeModal('orderModal')">Cancel</button>
+          <button type="submit" class="btn btn-doc">Submit Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/dashboard-doctor.js"></script>
+</body>
+</html>

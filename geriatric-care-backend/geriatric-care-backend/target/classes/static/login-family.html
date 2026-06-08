@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElderGuard Nexus – Family Login</title>
+    <meta name="description" content="Family member secure login portal for ElderGuard Nexus geriatric care platform.">
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta name="theme-color" content="#f59e0b">
+</head>
+
+<body class="role-family">
+    <a href="index.html" class="back-link">
+        <i data-lucide="arrow-left"></i>
+        <span>Back to Role Selection</span>
+    </a>
+    <div class="login-container">
+        <div class="login-hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-bg-image"
+                style="background-image: url('https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2070&auto=format&fit=crop')">
+            </div>
+            <div class="hero-content">
+                <div class="role-pill"><i data-lucide="users-2"></i><span>Family Portal</span></div>
+                <div class="logo"><i data-lucide="shield-check"></i><span>ElderGuard Nexus</span></div>
+                <h1 class="hero-title">Stay Connected<br>With Your Loved One</h1>
+                <p class="hero-subtitle">Track your loved one's health, view daily care updates, communicate with the
+                    care team, and gain peace of mind from anywhere in the world.</p>
+                <div class="hero-stats">
+                    <div class="stat"><span class="stat-number">Live</span><span class="stat-label">Health
+                            Updates</span></div>
+                    <div class="stat"><span class="stat-number">Direct</span><span class="stat-label">Care
+                            Messages</span></div>
+                    <div class="stat"><span class="stat-number">Peace</span><span class="stat-label">of Mind</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="login-form-container">
+            <div class="form-wrapper">
+                <div class="mobile-logo"><i data-lucide="shield-check"></i><span>ElderGuard</span></div>
+                <div class="form-role-badge">
+                    <div class="role-icon"><i data-lucide="users-2"></i></div>
+                    <div><span class="role-name">Family Member</span><span class="role-sub">Family Access Portal</span>
+                    </div>
+                </div>
+                <div class="form-header">
+                    <h2>Welcome, Family</h2>
+                    <p>Sign in to view your loved one's care updates and progress.</p>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event, 'family')">
+                    <div id="loginError" class="login-error"
+                        style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;">
+                    </div>
+                    <div class="input-group">
+                        <label for="familyName">Your Full Name</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input type="text" id="familyName" placeholder="Enter your full name" required
+                                autocomplete="name">
+                        </div>
+                        <small style="color:var(--muted,#94a3b8);font-size:11px;margin-top:4px;display:block;">Must
+                            match the emergency contact name in the patient's profile</small>
+                    </div>
+                    <div class="input-group">
+                        <label for="patientNumber">EG Patient Number</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="clipboard-list" class="input-icon"></i>
+                            <input type="text" id="patientNumber" placeholder="e.g. EG-10001" required
+                                autocomplete="off">
+                        </div>
+                        <small style="color:var(--muted,#94a3b8);font-size:11px;margin-top:4px;display:block;">The patient reference code provided by the care facility</small>
+                    </div>
+                    <div class="input-group">
+                        <div class="password-header">
+                            <label for="password">Password</label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" id="password" placeholder="••••••••" required
+                                autocomplete="current-password">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i data-lucide="eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="relation">Relationship to Patient</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="heart" class="input-icon"></i>
+                            <select id="relation" class="select-input" required>
+                                <option value="">Select relationship</option>
+                                <option value="spouse">Spouse / Partner</option>
+                                <option value="child">Son / Daughter</option>
+                                <option value="sibling">Sibling</option>
+                                <option value="parent">Parent</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="remember-me">
+                        <label class="checkbox-container">
+                            <input type="checkbox" checked="checked">
+                            <span class="checkmark"></span>
+                            Remember me for 30 days
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        <span>Sign In as Family</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </form>
+                <p class="signup-prompt">Not a family member? <a href="index.html">Switch role</a></p>
+                <div class="security-note">
+                    <i data-lucide="shield"></i>
+                    <span>Secured with 256-bit encryption. HIPAA compliant.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/login.js"></script>
+</body>
+
+</html>

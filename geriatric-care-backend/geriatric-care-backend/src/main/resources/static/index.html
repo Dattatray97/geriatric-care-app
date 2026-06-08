@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElderGuard Nexus - Select Your Role</title>
+    <meta name="description" content="ElderGuard Nexus - Smart Geriatric Care Platform. Select your role to access the system.">
+    <link rel="stylesheet" href="styles/role-select.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta name="theme-color" content="#0f172a">
+</head>
+
+<body>
+    <div class="bg-animated">
+        <div class="bg-circle c1"></div>
+        <div class="bg-circle c2"></div>
+        <div class="bg-circle c3"></div>
+    </div>
+
+    <div class="page-wrapper">
+        <header class="site-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">ElderGuard Nexus</span>
+                    <span class="brand-tagline">Smart Geriatric Care</span>
+                </div>
+            </div>
+            <div class="header-badge">
+                <i data-lucide="activity"></i>
+                <span>System Online</span>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-label">
+                <i data-lucide="shield-check"></i>
+                <span>Secure Role-Based Access</span>
+            </div>
+            <h1 class="hero-title">Select Your <span class="highlight">Portal</span></h1>
+            <p class="hero-subtitle">Access the ElderGuard Nexus platform with a personalized dashboard tailored to your role and responsibilities.</p>
+        </section>
+
+        <section class="roles-grid" aria-label="Select your login role">
+
+            <a href="login-caretaker.html" class="role-card caretaker" id="card-caretaker" aria-label="Login as Caretaker">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <div class="card-icon"><i data-lucide="heart-handshake"></i></div>
+                    <div class="card-icon-ring"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Caretaker</h2>
+                    <p class="card-desc">Manage daily patient care, vitals monitoring, medication schedules, and care orders in real-time.</p>
+                    <ul class="card-features">
+                        <li><i data-lucide="check-circle-2"></i> Patient vitals &amp; monitoring</li>
+                        <li><i data-lucide="check-circle-2"></i> Medication administration</li>
+                        <li><i data-lucide="check-circle-2"></i> Daily care orders</li>
+                        <li><i data-lucide="check-circle-2"></i> Alert management</li>
+                    </ul>
+                </div>
+                <div class="card-arrow"><i data-lucide="arrow-right"></i></div>
+                <div class="card-badge">Care Staff</div>
+            </a>
+
+            <a href="login-doctor.html" class="role-card doctor" id="card-doctor" aria-label="Login as Doctor">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <div class="card-icon"><i data-lucide="stethoscope"></i></div>
+                    <div class="card-icon-ring"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Doctor</h2>
+                    <p class="card-desc">Review clinical data, manage prescriptions, conduct virtual appointments, and oversee patient medical records.</p>
+                    <ul class="card-features">
+                        <li><i data-lucide="check-circle-2"></i> Medical records &amp; history</li>
+                        <li><i data-lucide="check-circle-2"></i> Prescription management</li>
+                        <li><i data-lucide="check-circle-2"></i> Appointment scheduling</li>
+                        <li><i data-lucide="check-circle-2"></i> Clinical dashboards</li>
+                    </ul>
+                </div>
+                <div class="card-arrow"><i data-lucide="arrow-right"></i></div>
+                <div class="card-badge">Medical</div>
+            </a>
+
+            <a href="login-family.html" class="role-card family" id="card-family" aria-label="Login as Family Member">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <div class="card-icon"><i data-lucide="users-2"></i></div>
+                    <div class="card-icon-ring"></div>
+                </div>
+                <div class="card-content">
+                    <h2 class="card-title">Family</h2>
+                    <p class="card-desc">Stay connected with your loved one's care, view health updates, and communicate with the care team effortlessly.</p>
+                    <ul class="card-features">
+                        <li><i data-lucide="check-circle-2"></i> Real-time health updates</li>
+                        <li><i data-lucide="check-circle-2"></i> Appointment overview</li>
+                        <li><i data-lucide="check-circle-2"></i> Secure messaging</li>
+                        <li><i data-lucide="check-circle-2"></i> Care progress reports</li>
+                    </ul>
+                </div>
+                <div class="card-arrow"><i data-lucide="arrow-right"></i></div>
+                <div class="card-badge">Family</div>
+            </a>
+
+        </section>
+
+        <footer class="site-footer">
+            <div class="footer-stats">
+                <div class="fstat"><i data-lucide="shield"></i><span>HIPAA Compliant</span></div>
+                <div class="fstat"><i data-lucide="lock"></i><span>256-bit Encrypted</span></div>
+                <div class="fstat"><i data-lucide="server"></i><span>99.9% Uptime</span></div>
+            </div>
+            <p class="footer-copy">© 2026 ElderGuard Nexus. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
